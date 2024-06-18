@@ -1,0 +1,93 @@
+abstract class SistemaDeNuvem {
+    - nome: String
+    - descricao: String
+    + recomendarSistemaDeNuvem(codigo: String): SistemaDeNuvem
+    + getPreco(): double
+}
+
+abstract class AnalisadorDeCodigo {
+    - Id: int
+    - linguagem: String
+    - tamanho: int
+    + getCodigo(codigo: String): String
+    + analisarCodigo(codigo: String): String
+}
+
+abstract class Usuario{
+   - Id
+   - Name
+   + enviarCodigo(codigo:String):String
+}
+
+class admin{
+   + alterarSistemaNuvem(serviceType: String):String
+   + incluirSistemaNuvem(serviceType:String):String
+   + excluirSistemaNuvem(serviceType:String):String
+}
+
+class comum{
+}
+
+class login{
+   - Email
+   - Senha
+   + verificarUsuario(user: String):Double
+}
+
+class AnalisadorPython {
+}
+
+class AnalisadorJava {
+}
+
+class AnalisadorGO {
+}
+
+
+class IAAS {
+}
+
+class PAAS {
+}
+
+class XASS {
+}
+
+class PriceRule {
+    - rules: Map<String, Double>
+    + getPriceRule(serviceType: String): Double
+}
+
+PriceRule "1" --> "*" SistemaDeNuvem
+SistemaDeNuvem <|-- IAAS
+SistemaDeNuvem <|-- PAAS
+SistemaDeNuvem <|-- XASS
+
+SistemaDeNuvem "1" --> "1" AnalisadorDeCodigo
+AnalisadorDeCodigo <|-- AnalisadorPython
+AnalisadorDeCodigo <|-- AnalisadorJava
+AnalisadorDeCodigo <|-- AnalisadorGO
+
+Usuario "1" --> "*" AnalisadorDeCodigo
+Usuario <|-- admin
+Usuario <|-- comum
+
+login "1" --> "1" Usuario
+
+note bottom of PriceRule
+  Esta classe gerencia as regras de preço para diferentes tipos de serviços de nuvem.
+end note
+
+note bottom of AnalisadorDeCodigo
+  Esta classe representa um analisador de código genérico.
+end note
+
+note bottom of AnalisadorDeCodigo
+   Não sabia onde inputar o código dentro da classe, então criei um get para isso
+end note
+
+note left of AnalisadorPython
+  Essas classes iriam utilizar metodos como linguagem natural 
+end note
+
+@enduml
