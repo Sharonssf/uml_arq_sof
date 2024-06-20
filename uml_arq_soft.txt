@@ -1,3 +1,4 @@
+@startuml
 abstract class SistemaDeNuvem {
     - nome: String
     - descricao: String
@@ -9,29 +10,30 @@ abstract class AnalisadorDeCodigo {
     - Id: int
     - linguagem: String
     - tamanho: int
+    - status: boolean
     + getCodigo(codigo: String): String
     + analisarCodigo(codigo: String): String
 }
 
-abstract class Usuario{
-   - Id
-   - Name
-   + enviarCodigo(codigo:String):String
+abstract class Usuario {
+    - Id
+    - Name
+    + enviarCodigo(codigo: String): String
 }
 
-class admin{
-   + alterarSistemaNuvem(serviceType: String):String
-   + incluirSistemaNuvem(serviceType:String):String
-   + excluirSistemaNuvem(serviceType:String):String
+class admin {
+    + alterarSistemaNuvem(serviceType: String): String
+    + incluirSistemaNuvem(serviceType: String): String
+    + excluirSistemaNuvem(serviceType: String): String
 }
 
-class comum{
+class comum {
 }
 
-class login{
-   - Email
-   - Senha
-   + verificarUsuario(user: String):Double
+class login {
+    - Email
+    - Senha
+    + verificarUsuario(user: String): Double
 }
 
 class AnalisadorPython {
@@ -42,7 +44,6 @@ class AnalisadorJava {
 
 class AnalisadorGO {
 }
-
 
 class IAAS {
 }
@@ -57,6 +58,41 @@ class PriceRule {
     - rules: Map<String, Double>
     + getPriceRule(serviceType: String): Double
 }
+
+abstract class Codigo {
+    - Id: int
+    - conteudo: String
+    - linguagem: String
+    + build(): String
+    + testar(): String
+    + deploy(): String
+    + produzir(): String
+}
+
+interface FaseCI {
+    + executar(codigo: Codigo): void
+}
+
+class Build {
+    + executar(codigo: Codigo): void
+}
+
+class Teste {
+    + executar(codigo: Codigo): void
+}
+
+class Deploy {
+    + executar(codigo: Codigo): void
+}
+
+class Producao {
+    + executar(codigo: Codigo): void
+}
+
+FaseCI <|.. Build
+FaseCI <|.. Teste
+FaseCI <|.. Deploy
+FaseCI <|.. Producao
 
 PriceRule "1" --> "*" SistemaDeNuvem
 SistemaDeNuvem <|-- IAAS
@@ -74,20 +110,8 @@ Usuario <|-- comum
 
 login "1" --> "1" Usuario
 
-note bottom of PriceRule
-  Esta classe gerencia as regras de preço para diferentes tipos de serviços de nuvem.
-end note
-
-note bottom of AnalisadorDeCodigo
-  Esta classe representa um analisador de código genérico.
-end note
-
-note bottom of AnalisadorDeCodigo
-   Não sabia onde inputar o código dentro da classe, então criei um get para isso
-end note
-
-note left of AnalisadorPython
-  Essas classes iriam utilizar metodos como linguagem natural 
-end note
+Usuario "1" --> "*" Codigo
+Codigo "1" --> "1" AnalisadorDeCodigo
+Codigo "1" --> "1" FaseCI
 
 @enduml
