@@ -2,7 +2,6 @@
 abstract class SistemaDeNuvem {
     - nome: String
     - descricao: String
-    + recomendarSistemaDeNuvem(codigo: String): SistemaDeNuvem
     + getPreco(): double
 }
 
@@ -13,6 +12,7 @@ abstract class AnalisadorDeCodigo {
     - status: boolean
     + getCodigo(codigo: String): String
     + analisarCodigo(codigo: String): String
+    + recomendarSistemaDeNuvem(codigo: String): SistemaDeNuvem
 }
 
 abstract class Usuario {
@@ -30,10 +30,8 @@ class admin {
 class comum {
 }
 
-class login {
-    - Email
-    - Senha
-    + verificarUsuario(user: String): Double
+class UserController {
+    + verificarUsuario (user: String): Double
 }
 
 class AnalisadorPython {
@@ -63,10 +61,6 @@ abstract class Codigo {
     - Id: int
     - conteudo: String
     - linguagem: String
-    + build(): String
-    + testar(): String
-    + deploy(): String
-    + produzir(): String
 }
 
 interface FaseCI {
@@ -89,10 +83,10 @@ class Producao {
     + executar(codigo: Codigo): void
 }
 
-FaseCI <|.. Build
-FaseCI <|.. Teste
-FaseCI <|.. Deploy
-FaseCI <|.. Producao
+FaseCI --> Build
+Build--> Teste
+Teste-->Deploy
+Deploy-->Producao
 
 PriceRule "1" --> "*" SistemaDeNuvem
 SistemaDeNuvem <|-- IAAS
@@ -104,14 +98,13 @@ AnalisadorDeCodigo <|-- AnalisadorPython
 AnalisadorDeCodigo <|-- AnalisadorJava
 AnalisadorDeCodigo <|-- AnalisadorGO
 
-Usuario "1" --> "*" AnalisadorDeCodigo
 Usuario <|-- admin
 Usuario <|-- comum
 
-login "1" --> "1" Usuario
+UserController"1" --> "1" Usuario
 
 Usuario "1" --> "*" Codigo
 Codigo "1" --> "1" AnalisadorDeCodigo
-Codigo "1" --> "1" FaseCI
+AnalisadorDeCodigo"1" --> "1" FaseCI
 
 @enduml
